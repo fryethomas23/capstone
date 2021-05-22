@@ -61,8 +61,10 @@ def create_app(test_config=False):
     if type(token) == AuthError:
           print(token)
           abort(token.status_code)
-
-    player = Players.query.get(id)
+    try:
+      player = Players.query.get(id)
+    except:
+      abort(404)
 
     return jsonify({
           "success": True,
@@ -75,8 +77,10 @@ def create_app(test_config=False):
     if type(token) == AuthError:
       print(token)
       abort(token.status_code)
-
-    team = Teams.query.get(id)
+    try:
+      team = Teams.query.get(id)
+    except:
+      abort(404)
 
     return jsonify({
         "success": True,
@@ -100,10 +104,12 @@ def create_app(test_config=False):
     if rating <= 0 or rating >= 100:
       abort(422)
 
-    new_player = Players(name=name, nationality=nationality, rating=rating, 
-      team_id=team_id)
-    
-    new_player.insert()
+    try:
+      new_player = Players(name=name, nationality=nationality, rating=rating, 
+        team_id=team_id)
+      new_player.insert()
+    except:
+      abort(422)
 
     return jsonify({
           "success": True,
@@ -125,9 +131,11 @@ def create_app(test_config=False):
     if rating <= 0 or rating >= 100:
       abort(422)
 
-    new_team = Teams(name=name, nation=nation, rating=rating)
-    
-    new_team.insert()
+    try:
+      new_team = Teams(name=name, nation=nation, rating=rating)
+      new_team.insert()
+    except:
+      abort(422)
 
     return jsonify({
           "success": True,
@@ -175,8 +183,8 @@ def create_app(test_config=False):
         abort(token.status_code)
 
     player = Players.query.filter_by(id=id).one_or_none()
-    # if not player:
-    #   abort(404)
+    if not player:
+      abort(404)
 
     player.delete()
 
@@ -187,29 +195,13 @@ def create_app(test_config=False):
 
 
   #error handling
-  @app.errorhandler(422)
-  def unprocessable(error):
+  @app.errorhandler(400)
+  def forbidden(error):
     return jsonify({
         "success": False, 
-        "error": 422,
-        "message": "unprocessable"
-        }), 422
-
-  @app.errorhandler(405)
-  def method_not_allowed(error):
-    return jsonify({
-        "success": False, 
-        "error": 405,
-        "message": "Method Not Allowed"
-        }), 405
-
-  @app.errorhandler(404)
-  def not_found(error):
-    return jsonify({
-        "success": False, 
-        "error": 404,
-        "message": "Not Found"
-        }), 404
+        "error": 400,
+        "message": "Bad Request"
+        }), 400
 
   @app.errorhandler(401)
   def unauthorized(error):
@@ -227,13 +219,21 @@ def create_app(test_config=False):
         "message": "Forbidden"
         }), 403
 
-  @app.errorhandler(400)
-  def forbidden(error):
+  @app.errorhandler(404)
+  def not_found(error):
     return jsonify({
         "success": False, 
-        "error": 400,
-        "message": "Bad Request"
-        }), 400
+        "error": 404,
+        "message": "Not Found"
+        }), 404
+        
+  @app.errorhandler(422)
+  def unprocessable(error):
+    return jsonify({
+        "success": False, 
+        "error": 422,
+        "message": "Unprocessable"
+        }), 422
 
   @app.errorhandler(AuthError)
   def Authentication_error(error):

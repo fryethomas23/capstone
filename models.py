@@ -109,26 +109,3 @@ class Teams(db.Model):
 
     # def __repr__(self):
     #         return 
-
-    # '''
-    # short()
-    #     short form representation of the Drink model
-    # '''
-    # def short(self):
-    #     short_recipe = [{'color': r['color'], 'parts': r['parts']} for r in json.loads(self.recipe)]
-    #     return {
-    #         'id': self.id,
-    #         'title': self.title,
-    #         'recipe': short_recipe
-    #     }
-
-    # '''
-    # long()
-    #     long form representation of the Drink model
-    # '''
-    # def long(self):
-    #     return {
-    #         'id': self.id,
-    #         'title': self.title,
-    #         'recipe': json.loads(self.recipe)
-    #     }
