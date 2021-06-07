@@ -1,7 +1,31 @@
 API Reference
 
 Introduction
-    This API is intended to provide an interface for fans to get general information on soccer players and teams. This API also allows managers to manage the players and teams that are available to fans to view.
+    This project is a soccer club and player manager. Managers are able to get detailed information on players and teams, add players, delete players, and update players. Fans can view general information about players and teams. As part of the Udacity Fullstack nanodegree, this project serves as the capstone project, where skills used in the previous modules, such as data modeling, API architecture and testing, third-party authentication, code quality, documentation, and deployment, are demonstrated.
+
+
+Pre-requisites and Local Development
+
+Developers using this project should already have Python3 and pip installed on their local machines. Run the following commands in the main folder to download the dependencies:
+
+    pip install -r requirements.txt
+
+If local deployment is desired, The backend app can be hosted at the default, http://127.0.0.1:8080/. To run the application navigate to the main folder and run the following commands:
+
+    export FLASK_APP=app.py
+    export FLASK_ENV=development
+    flask run
+
+These commands put the application in development mode and directs the application to use app.py. Development mode restarts the server when changes are made to the application and shows an interactive debugger in the console. Review flask documentation for further information.
+
+
+Tests
+
+In order to run tests run the following commands in the main folder:
+
+    python test_app.py
+
+All tests are kept in that file and should be maintained as updates are made to app functionality.
 
 
 Getting Started
@@ -258,3 +282,7 @@ PATCH /playesr/{player_id}
     },
     "success": true
 }
+
+
+Deployment
+

@@ -6,6 +6,7 @@ from flask_cors import CORS
 from models import setup_db, Players, Teams
 from auth import requires_auth, AuthError
 
+
 def create_app(test_config=False):
   # create and configure the app
   app = Flask(__name__)
@@ -14,21 +15,22 @@ def create_app(test_config=False):
 
   @app.after_request
   def after_request(response):
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+    response.headers.add('Access-Control-Allow-Headers',
+      'Content-Type,Authorization,true')
+    response.headers.add('Access-Control-Allow-Methods',
+      'GET,PATCH,POST,DELETE,OPTIONS')
     return response
 
-
-  #GET ENDPOINTS
+  # Get endpoints - general information
   @app.route('/players', methods=['GET'])
   @requires_auth('get:players')
   def get_players(token):
     if type(token) == AuthError:
-          print(token)
-          abort(token.status_code)
+      print(token)
+      abort(token.status_code)
 
     players = Players.query.all()
-    player_list=[]
+    player_list = []
     for player in players:
       player_list.append(player.short())
 
@@ -41,8 +43,8 @@ def create_app(test_config=False):
   @requires_auth('get:teams')
   def get_teams(token):
     if type(token) == AuthError:
-          print(token)
-          abort(token.status_code)
+      print(token)
+      abort(token.status_code)
 
     teams = Teams.query.all()
     team_list = []
@@ -54,16 +56,16 @@ def create_app(test_config=False):
         "teams": team_list
       }), 200
 
+  # Get endpoints - detailed information
   @app.route('/players/<int:id>', methods=['GET'])
   @requires_auth('get:players-detail')
   def get_player_detail(token, id):
-    print(id)
     if type(token) == AuthError:
-          print(token)
-          abort(token.status_code)
-    try:
-      player = Players.query.get(id)
-    except:
+      print(token)
+      abort(token.status_code)
+
+    player = Players.query.filter_by(id=id).one_or_none()
+    if not player:
       abort(404)
 
     return jsonify({
@@ -77,9 +79,9 @@ def create_app(test_config=False):
     if type(token) == AuthError:
       print(token)
       abort(token.status_code)
-    try:
-      team = Teams.query.get(id)
-    except:
+
+    team = Teams.query.filter_by(id=id).one_or_none()
+    if not team:
       abort(404)
 
     return jsonify({
@@ -87,13 +89,13 @@ def create_app(test_config=False):
         "team": team.long()
       }), 200
 
-  #POST/PATCH ENDPOINTS
+  # Post/patch endpoints
   @app.route('/players', methods=['POST'])
   @requires_auth('post:player')
   def post_player(token):
     if type(token) == AuthError:
-        print(token)
-        abort(token.status_code)
+      print(token)
+      abort(token.status_code)
 
     body = request.get_json()
     name = body.get('name', None)
@@ -101,11 +103,10 @@ def create_app(test_config=False):
     rating = body.get('rating', None)
     team_id = body.get('team_id', None)
 
-    if rating <= 0 or rating >= 100:
-      abort(422)
-
     try:
-      new_player = Players(name=name, nationality=nationality, rating=rating, 
+      if rating <= 0 or rating >= 100:
+        abort(422)
+      new_player = Players(name=name, nationality=nationality, rating=rating,
         team_id=team_id)
       new_player.insert()
     except:
@@ -118,20 +119,19 @@ def create_app(test_config=False):
 
   @app.route('/teams', methods=['POST'])
   @requires_auth('post:team')
-  def post_team(token=None):
+  def post_team(token):
     if type(token) == AuthError:
-        print(token)
-        abort(token.status_code)
+      print(token)
+      abort(token.status_code)
 
     body = request.get_json()
     name = body.get('name', None)
     nation = body.get('nation', None)
     rating = body.get('rating', None)
 
-    if rating <= 0 or rating >= 100:
-      abort(422)
-
     try:
+      if rating <= 0 or rating >= 100:
+        abort(422)
       new_team = Teams(name=name, nation=nation, rating=rating)
       new_team.insert()
     except:
@@ -146,8 +146,8 @@ def create_app(test_config=False):
   @requires_auth('patch:player')
   def update_player(token, id):
     if type(token) == AuthError:
-        print(token)
-        abort(token.status_code)
+      print(token)
+      abort(token.status_code)
 
     player = Players.query.filter_by(id=id).one_or_none()
     if not player:
@@ -175,12 +175,12 @@ def create_app(test_config=False):
           "player": player.long()
       }), 200
 
-  #DELETE ENDPOINTS
+  # Delete endpoints
   @app.route('/players/<int:id>', methods=['DELETE'])
   @requires_auth('delete:player')
   def delete_player(token, id):
     if type(token) == AuthError:
-        abort(token.status_code)
+      abort(token.status_code)
 
     player = Players.query.filter_by(id=id).one_or_none()
     if not player:
@@ -193,60 +193,59 @@ def create_app(test_config=False):
           "player_id": id
       }), 200
 
-
-  #error handling
+  # Error handling
   @app.errorhandler(400)
   def forbidden(error):
     return jsonify({
-        "success": False, 
-        "error": 400,
-        "message": "Bad Request"
-        }), 400
+      "success": False,
+      "error": 400,
+      "message": "Bad Request"
+    }), 400
 
   @app.errorhandler(401)
   def unauthorized(error):
     return jsonify({
-        "success": False, 
-        "error": 401,
-        "message": "Unauthorized"
-        }), 401
+      "success": False,
+      "error": 401,
+      "message": "Unauthorized"
+    }), 401
 
   @app.errorhandler(403)
   def forbidden(error):
     return jsonify({
-        "success": False, 
-        "error": 403,
-        "message": "Forbidden"
-        }), 403
+      "success": False,
+      "error": 403,
+      "message": "Forbidden"
+    }), 403
 
   @app.errorhandler(404)
   def not_found(error):
     return jsonify({
-        "success": False, 
-        "error": 404,
-        "message": "Not Found"
-        }), 404
-        
+      "success": False,
+      "error": 404,
+      "message": "Not Found"
+    }), 404
+    
   @app.errorhandler(422)
   def unprocessable(error):
     return jsonify({
-        "success": False, 
-        "error": 422,
-        "message": "Unprocessable"
-        }), 422
+      "success": False,
+      "error": 422,
+      "message": "Unprocessable"
+    }), 422
 
   @app.errorhandler(AuthError)
   def Authentication_error(error):
     return jsonify({
-        "success": False, 
-        "error": error.error['code'],
-        "message": error.error['description']
-        }), error.status_code
-
+      "success": False,
+      "error": error.error['code'],
+      "message": error.error['description']
+    }), error.status_code
 
   return app
 
 APP = create_app()
+
 
 if __name__ == '__main__':
     APP.run(host='0.0.0.0', port=8080, debug=True)
