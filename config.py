@@ -1,4 +1,5 @@
 import os
+import re
 
 DB_HOST = os.getenv('DB_HOST', 'localhost:5432')
 DB_USER = os.getenv('DB_USER', 'User')
