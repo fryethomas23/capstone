@@ -22,6 +22,14 @@ def create_app(test_config=False):
     return response
 
   # Get endpoints - general information
+  @app.route('/', methods=['GET'])
+  def get_index():
+
+    return jsonify({
+          "success": True,
+          "message": "Welcome"
+      }), 200
+
   @app.route('/players', methods=['GET'])
   @requires_auth('get:players')
   def get_players(token):
