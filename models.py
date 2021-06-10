@@ -22,6 +22,7 @@ def setup_db(app, test=False):
 
 # Models
 
+
 class Players(db.Model):
     __tablename__ = 'players'
 
@@ -42,7 +43,7 @@ class Players(db.Model):
     def update(self):
         try:
             db.session.commit()
-        except:
+        except Exception:
             db.session.rollback()
             raise Exception
 
@@ -74,8 +75,11 @@ class Teams(db.Model):
     name = db.Column(db.String, nullable=False)
     nation = db.Column(db.String, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    players = db.relationship('Players', backref='team', lazy='joined',
-        cascade='all, delete-orphan')
+    players = db.relationship(
+        'Players', backref='team',
+        lazy='joined',
+        cascade='all, delete-orphan'
+    )
 
     def insert(self):
         db.session.add(self)
@@ -88,7 +92,7 @@ class Teams(db.Model):
     def update(self):
         try:
             db.session.commit()
-        except:
+        except Exception:
             db.session.rollback()
             raise Exception
 

@@ -18,6 +18,49 @@ If local deployment is desired, The backend app can be hosted at the default, ht
 
 These commands put the application in development mode and directs the application to use app.py. Development mode restarts the server when changes are made to the application and shows an interactive debugger in the console. Review flask documentation for further information.
 
+Heroku Deployment
+
+First, we need to create an account with Heroku, which can be done at the following:
+    
+    https://signup.heroku.com
+
+After creating an account, install Heroku CLI with Homebrew by running:
+
+    brew tap heroku/brew && brew install heroku
+
+Alternatively Heroku CLI web download instructions can be found
+
+    https://devcenter.heroku.com/categories/command-line
+
+Once Heroku CLI has been downloaded, the running Heroku commands is now available. Enter the following into the terminal and then provide your authentication information:
+    
+    heroku login 
+
+In order to create the Heroku app run the following in the terminal:
+    
+    heroku create {name_of_your_app}
+
+The output will include a git url for your Heroku application. Copy this. Using the git url obtained previously, in terminal run the following:
+    
+    git remote add heroku {heroku_git_url}
+
+Run this code in order to create a database and connect it to the application: 
+    heroku addons:create heroku-postgresql:hobby-dev --app {name_of_your_application}
+
+the following command can optionally be run to in order to check your configuration variables in Heroku.
+    
+    heroku config --app name_of_your_application 
+
+DATABASE_URL and the URL of the database that was just created will be seen. In the browser, go to the Heroku Dashboard, login, and access your application's settings. Reveal the applications config variables and add all of the required environment variables for the project. Then, run the following command to push the reposity to Heroku:
+
+    git push heroku master
+
+Once the application is deployed, run migrations by running:    
+    
+    heroku run python manage.py db upgrade --app {name_of_your_application}
+
+The application can now be opened from your Heroku Dashboard
+
 
 Tests
 
@@ -33,10 +76,10 @@ Getting Started
     Base URL: https://thomas-soccer-app.herokuapp.com/
     Authentication: this application requires authentication through Auth0.
         fan jwt: 
-            eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjJjekZUM1VUTU02TjAzNWhZT2Z3MCJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtdGhvbWFzLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MDg0OTI1NTZiNGRlOTAwNjk1Y2JmNjAiLCJhdWQiOiJzb2NjZXIiLCJpYXQiOjE2MjMyNDA4MDgsImV4cCI6MTYyMzI0ODAwOCwiYXpwIjoiWjhqVWJYUUFCM1pzNHJmVXA3eGlaZmNyd282YkFlcVciLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImdldDpwbGF5ZXJzIiwiZ2V0OnRlYW1zIl19.DDv-SPqQKfuKLwXAW96ZWcgKvCYHtrVHmBmDzMVZaaTCrj5JDd9F12Me81RWyx_d8tB-VNU9479bXyPFU8h3lZxoHTe6s0OVZqMtZbU3upAUoJxgJE7zLjCvNi_tqivRLeWYtA85-vbyNrDZPHtcH3aUv3sR5DdBAQqRGQ8B4yfpv_JLHNQYKfqqwct3RCJmPqq5QogqVjlYwXn2MLsdSnegM30XDpIoVrRMy1shO5TQP_bjIE38CKKEkyPurmFNoqKB8pYby9jhZyXC4DIndCc03tnNdtCVtQ9VqiWIolTckFBmxfEGC3F_4VcttACCMF4Bhz3ZkoravRXY6A3jrg
+            eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjJjekZUM1VUTU02TjAzNWhZT2Z3MCJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtdGhvbWFzLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MDg0OTI1NTZiNGRlOTAwNjk1Y2JmNjAiLCJhdWQiOiJzb2NjZXIiLCJpYXQiOjE2MjMyODM1MDUsImV4cCI6MTYyMzI5MDcwNSwiYXpwIjoiWjhqVWJYUUFCM1pzNHJmVXA3eGlaZmNyd282YkFlcVciLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImdldDpwbGF5ZXJzIiwiZ2V0OnRlYW1zIl19.aloHQdGOzT8UXuC-Z-UJQouzY1IqV9pWuLXsd2cDHDijLz81MN3oivb2tdtd-lV6YbZv9JUQtZ9_5i4GW30PsTzG-dcBmac8KL5JHZG9ss9q1CSijPl72XnYKGl1JjX8YI6eXQM_VRBJh4Ums-8sa4TBvSVRFuUIun4QQHqDnpXajzFGvSmcTRgQclO0WY_9qRBGKWP0xFYkbUyen4gRZyHqyORlTlrXq9bDmO0vl6b659vCEUwEnVx4twhbJIA2tS3KFnTuubDVvvNDDzOTyFRuJg5ZaSOYZpJc-atytFx_77R_SxolFBeqPpquVoACZG8_W5AwHIk7VP_CEKRRxw
         
         manager jwt:        
-            eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjJjekZUM1VUTU02TjAzNWhZT2Z3MCJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtdGhvbWFzLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MDg0OTIyYTU5OWY4MzAwNmFkNjQ4NWYiLCJhdWQiOiJzb2NjZXIiLCJpYXQiOjE2MjMyNDA1NTksImV4cCI6MTYyMzI0Nzc1OSwiYXpwIjoiWjhqVWJYUUFCM1pzNHJmVXA3eGlaZmNyd282YkFlcVciLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTpwbGF5ZXIiLCJnZXQ6cGxheWVycyIsImdldDpwbGF5ZXJzLWRldGFpbCIsImdldDp0ZWFtcyIsImdldDp0ZWFtcy1kZXRhaWwiLCJwYXRjaDpwbGF5ZXIiLCJwb3N0OnBsYXllciIsInBvc3Q6dGVhbSJdfQ.rQWv1byns6VRXw-0kjA_ZHLatSK-6npYToVuQFQld2BTbOHJtEAsRtKR2XgwjZsV1wNlbtkeb8HT22l0UyBVoBodErtsZFhhfEeXe5srnZcfi5ds6VryEbGo84lc2yeHEZwu2PAxWv4hUriX1Ju433qKqf2tRdpMiH3fFF30S7vmwySqG4AQvgAE6vHakWAj7LcYARZrc6dIU8lLjuvIb0dX8kzjQdlGTkrKCez0-PjWSD4dJ7LommUFsYOPzodILhUBgVa0YC8K8Zig8RSv5s5Zl4tApyE3fNwUQf0tU449puiTHzooV6nKmEZF1E1hRwE9F0cgMrWQwTLTh0ksdA
+            eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjJjekZUM1VUTU02TjAzNWhZT2Z3MCJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtdGhvbWFzLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MDg0OTIyYTU5OWY4MzAwNmFkNjQ4NWYiLCJhdWQiOiJzb2NjZXIiLCJpYXQiOjE2MjMyODMzNzAsImV4cCI6MTYyMzI5MDU3MCwiYXpwIjoiWjhqVWJYUUFCM1pzNHJmVXA3eGlaZmNyd282YkFlcVciLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTpwbGF5ZXIiLCJnZXQ6cGxheWVycyIsImdldDpwbGF5ZXJzLWRldGFpbCIsImdldDp0ZWFtcyIsImdldDp0ZWFtcy1kZXRhaWwiLCJwYXRjaDpwbGF5ZXIiLCJwb3N0OnBsYXllciIsInBvc3Q6dGVhbSJdfQ.R0nSmCIfumwgYmp5VmVaM59iGeX4Bk--4qbF22JYakaQj-wApbIjynyrn0ukZg8JZhsZDcHE4IckVMHCWF2MkkccbbbLNsejcCiJPEo9hrgEWwZKrK-DC6kYkgftV_Ed6XyBH9bHgE-phnQuGmNgudiO4Ypn5N2nYImAeITJjWBXyfcD0JaJcpbLk5BLHmbSCVoCLeanIxM2tMZ1aWm1-g2Kbw_DohbG6WDl11_VoTVk4JL-dACjgVq1fWagVAfs6oZg0-djY8PAGb62iEzxeC1O6USuvthR3erCzYnObrO158E8KrtjDb3sYhUkNGceZZCpF76sUq_goKwNIMyprg
 
 
 Error Handling
